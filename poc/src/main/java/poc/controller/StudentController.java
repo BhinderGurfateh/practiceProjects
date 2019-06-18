@@ -54,6 +54,12 @@ public class StudentController {
 		studentService.delete(Long.valueOf(id));
         return ;
     }
+	
+     @DeleteMapping(value = "/students", produces = "application/json")
+    public void dropTable(){
+		studentService.dropTable();
+        return ;
+    }	
     
     @PostMapping("/uploadFile")
     public ResponseEntity<String> uploadFile(@RequestParam("file") MultipartFile file) {
