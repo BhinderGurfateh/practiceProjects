@@ -101,7 +101,8 @@ public class StudentController {
       
             // Create castobaen and csvreader object 
             CSVReader csvReader = null;           
-            csvReader = new CSVReader(new InputStreamReader(file.getInputStream(),StandardCharsets.UTF_8)); 
+            csvReader = new CSVReader(
+            		new InputStreamReader(file.getInputStream(),StandardCharsets.UTF_8)); 
             
             CsvToBean csvToBean = new CsvToBean(); 
       
