@@ -63,13 +63,13 @@ public class FileProcessController {
     
 
     @GetMapping(value = "/Files", produces = "application/json")
-    public List<FileInfo> listStudents(){
+    public List<FileInfo> listFiles(){
     	
         return fileService.listAll();
     }
 
     @GetMapping(value = "/Files/{id}", produces = "text/plain" )
-    public ResponseEntity<String> getStudent(@PathVariable String id){
+    public ResponseEntity<String> getAFileStatus(@PathVariable String id){
         FileInfo savedFile= fileService.getById(Long.valueOf(id));
         String status="";
         if(savedFile.getIsProcessed()) {
