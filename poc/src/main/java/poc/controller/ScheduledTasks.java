@@ -14,6 +14,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +41,7 @@ public class ScheduledTasks {
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-    @Scheduled(fixedRate =100000)
+   // @Scheduled(fixedRate =200000)
     public void processAllPendingFiles() {        
     	log.info("The time is now {}", dateFormat.format(new Date()));
     	List<FileInfo> fileInfos =fileService.listAllPendingFiles();
@@ -95,6 +96,23 @@ public class ScheduledTasks {
     	}
     	
     	
+    }
+    
+    @Async
+    public void processThisFileNow(FileInfo fileInfo) {      
+    	try {
+        	log.info("Makin this thread to go to sleep to illustrate Asyn method", dateFormat.format(new Date()));  	
+
+			Thread.sleep(10000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	log.info("The time is now {}", dateFormat.format(new Date()));  	
+    			this.readAndLoadDataOfAFile(fileInfo.getFilePath());
+    			fileService.updateFileStatus(fileInfo.get_id());
+    			return;
+
     }
     
 }

@@ -22,6 +22,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 public class FileProcessController {
@@ -29,6 +30,8 @@ public class FileProcessController {
 	@Autowired
     private FileService fileService;
 	
+	@Autowired
+    private ScheduledTasks scheduledTasks;
 	
     public static final String uploadingDir = System.getProperty("user.dir") + "/uploadingDir/";
     //System.getProperty("jboss.server.data.dir") in case of server deployment
@@ -58,6 +61,14 @@ public class FileProcessController {
             fileInfo.setIsProcessed(false);
             
             FileInfo savedFile=fileService.saveOrUpdate(fileInfo);
+            
+         //  CompletableFuture.supplyAsync((savedFile) -> {return scheduledTasks.processThisFileNow(savedFile);});
+           /*CompletableFuture.runAsync((savedFile) -> {
+            	scheduledTasks.processThisFileNow(savedFile);
+            });*/
+            
+            scheduledTasks.processThisFileNow(savedFile);
+            
             return new ResponseEntity("Successfully uploaded , File reference Id: "+savedFile.get_id(), HttpStatus.OK);
     }
     
