@@ -40,8 +40,8 @@ public class ScheduledTasks {
     private static final Logger log = LoggerFactory.getLogger(ScheduledTasks.class);
 
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
-
-   // @Scheduled(fixedRate =200000)
+   
+  //  @Scheduled(cron = "0 0 1 * * ?")
     public void processAllPendingFiles() {        
     	log.info("The time is now {}", dateFormat.format(new Date()));
     	List<FileInfo> fileInfos =fileService.listAllPendingFiles();
