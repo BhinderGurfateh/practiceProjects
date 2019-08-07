@@ -1,54 +1,82 @@
 package poc.controller;
 
-import org.apache.tomcat.jni.Time;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import javax.validation.constraints.Size;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*; 
-
-import com.opencsv.CSVReader; 
-import com.opencsv.bean.CsvToBean; 
-import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 
 import poc.dao.StudentRepository;
-import poc.entity.Student;
-import poc.service.StudentService;
-
-import java.util.List;
 
 @RestController
-public class RunExecutable {
+public class SingleThreadTaskExecutor {
 
 	@Autowired
-    private StudentRepository studentRepository;
+	 private  StudentRepository studentRepository;
+	
+	private static ExecutorService executor = Executors.newSingleThreadExecutor();
 
-	@GetMapping(value = "/executable", produces = "application/json")
-	private static void anotherWay()
-	{
-	    final String uri = "http://localhost:9000/runCppExecutable";
+	private static Integer counter=0;
+    
+   @GetMapping(value = "/singleThreadTask", produces = "application/json")
+   public  void testThread() throws InterruptedException {
+      try {
 
-	    RestTemplate restTemplate = new RestTemplate();
-	     restTemplate.getForObject(uri, String.class);
-	     
-	    System.out.println("Request done!");
+         executor.submit(new Task(studentRepository));
+         //executor.shutdown();
+    	 System.out.println("Task Added in queue"); 
+
+         
+      } catch (Exception e) {
+         System.err.println("tasks interrupted");
+      } finally {
+//         executor.shutdownNow();
+//         System.out.println("shutdown finished");
+      }
+   }
+
+    class Task implements Runnable {     
+		
+	   private StudentRepository studentRepository;
+	   
+	   
+   
+      public Task(StudentRepository studentRepository) {
+		super();
+		this.studentRepository = studentRepository;
 	}
 
-	@GetMapping(value = "/runCppExecutable", produces = "application/json")
-	public  ResponseEntity<String> listStudents(){
-		try {
-			System.out.print("Entry time: " +new java.util.Date());
+	public void run() {
 
+         try {
+        	 
+            System.out.println("Running Service to be executed !"); 
+            runExe();
+            
+            
+         } catch (Exception e) {
+            e.printStackTrace();
+         }
+      }
+      
+  	public synchronized ResponseEntity<String> runExe(){
+		try {
+	          counter++;
+
+	    	System.out.println("Nth RUN STARTED : "+counter); 
+
+			System.out.print("Entry time: " +new java.util.Date());
 			//	creating 10 tables with 20 column each.	
 			studentRepository.createStudentTableA();
 			studentRepository.createStudentTableB();
@@ -133,6 +161,8 @@ public class RunExecutable {
 		return new ResponseEntity("Success", HttpStatus.OK);
 	}
 
+   }
+   
 
-
+	
 }
