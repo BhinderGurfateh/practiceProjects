@@ -1,5 +1,6 @@
 package poc.controller;
 
+import org.apache.tomcat.jni.Time;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +15,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*; 
-  
+
 import com.opencsv.CSVReader; 
 import com.opencsv.bean.CsvToBean; 
-import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy; 
+import com.opencsv.bean.HeaderColumnNameTranslateMappingStrategy;
 
+import poc.dao.StudentRepository;
 import poc.entity.Student;
 import poc.service.StudentService;
 
@@ -27,45 +29,98 @@ import java.util.List;
 @RestController
 public class RunExecutable {
 
+	@Autowired
+    private StudentRepository studentRepository;
 
-    @GetMapping(value = "/runCppExecutable", produces = "application/json")
-    public ResponseEntity<String> listStudents(){
-    	try {
-//    		ProcessBuilder processBuilder = new ProcessBuilder();
-//    		processBuilder.command("cmd.exe", "/c", "dir C:\\Users\\mkyong");
-//    		Process process = processBuilder.start();
-    	Process process = Runtime.getRuntime().exec("C:\\Users\\gurfateh.bhinder\\Desktop\\test\\test.exe", null, new File("C:\\Users\\gurfateh.bhinder\\Desktop\\test\\"));
 
-    	System.out.println("passed path");
-    	
-		StringBuilder output = new StringBuilder();
+	@GetMapping(value = "/runCppExecutable", produces = "application/json")
+	public  ResponseEntity<String> listStudents(){
+		try {
+			System.out.print("Entry time: " +new java.util.Date());
 
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(process.getInputStream()));
+			//	creating 10 tables with 20 column each.	
+			studentRepository.createStudentTableA();
+			studentRepository.createStudentTableB();
+			studentRepository.createStudentTableC();
+			studentRepository.createStudentTableD();
+			studentRepository.createStudentTableE();
+			studentRepository.createStudentTableF();
+			studentRepository.createStudentTableG();
+			studentRepository.createStudentTableH();
+			studentRepository.createStudentTableI();
+			studentRepository.createStudentTableJ();
+			studentRepository.createStudentTableK();
+			studentRepository.createStudentTableL();
+			studentRepository.createStudentTableM();
+			studentRepository.createStudentTableN();
+			studentRepository.createStudentTableO();
+			studentRepository.createStudentTableP();
+			studentRepository.createStudentTableQ();
+			studentRepository.createStudentTableR();
+			studentRepository.createStudentTableS();
+			studentRepository.createStudentTableT();
 
-		String line;
-		while ((line = reader.readLine()) != null) {
-			output.append(line + "\n");
-		}
 
-		int exitVal = process.waitFor();
-		if (exitVal == 0) {
-			System.out.println("Success!");
+
+			Process process = Runtime.getRuntime().exec("C:\\Users\\gurfateh.bhinder\\Desktop\\test\\test.exe", null, new File("C:\\Users\\gurfateh.bhinder\\Desktop\\test\\"));
+
+			System.out.println("\nRead the executable file ");
+
+			StringBuilder output = new StringBuilder();
+
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(process.getInputStream()));
+
+			String line;
+			while ((line = reader.readLine()) != null) {
+				output.append(line + "\n");
+			}
+
+			/*
+			 * int exitVal = process.waitFor(); if (exitVal == 0) {
+			 * System.out.println("Success!"); System.out.println(output); System.exit(0); }
+			 * else { //abnormal... System.out.println("Something went wrong"); }
+			 */
+			System.out.println("Success!"); 
 			System.out.println(output);
-			System.exit(0);
-		} else {
-			//abnormal...
-			System.out.println("Something went wrong");
-		}
 
-	} catch (IOException e) {
-		e.printStackTrace();
-	} catch (InterruptedException e) {
-		e.printStackTrace();
+			if(process.isAlive()) {
+				process.destroy();
+			}
+			
+			//Droping 10 tables with 20 column each.	
+			studentRepository.dropTableA();
+			studentRepository.dropTableB();
+			studentRepository.dropTableC();
+			studentRepository.dropTableD();
+			studentRepository.dropTableE();
+			studentRepository.dropTableF();
+			studentRepository.dropTableG();
+			studentRepository.dropTableH();
+			studentRepository.dropTableI();
+			studentRepository.dropTableJ();
+			studentRepository.dropTableK();
+			studentRepository.dropTableL();
+			studentRepository.dropTableM();
+			studentRepository.dropTableN();
+			studentRepository.dropTableO();
+			studentRepository.dropTableP();
+			studentRepository.dropTableQ();
+			studentRepository.dropTableR();			
+			studentRepository.dropTableS();
+			studentRepository.dropTableT();
+			
+			
+			System.out.print("Exit time: " +new java.util.Date());
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		} /*
+		 * catch (InterruptedException e) { e.printStackTrace(); }
+		 */
+
+		return new ResponseEntity("Success", HttpStatus.OK);
 	}
-	
-        return new ResponseEntity("Successfully uploaded ", HttpStatus.OK);
-    }
 
 
 

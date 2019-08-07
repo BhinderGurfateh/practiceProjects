@@ -26,7 +26,8 @@ public class DynamicSchedular  implements Runnable{
 
 	private ScheduledFuture scheduledFuture;
 
-    private String cron="* */1 * * * ?"; 
+ //   private String cron="* */1 * * * ?";
+	 private String cron="* * 1 * * ?";
       
     @PostMapping( value = "/resetCron", consumes = "application/json")
 	public void setCronToRescheduleTask( @RequestBody CronScheduleBean cron) {
